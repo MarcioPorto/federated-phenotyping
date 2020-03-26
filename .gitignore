@@ -1,3 +1,6 @@
 # ignore all the data files
 *.xml
 *.csv
+
+# vscode files
+.vscode

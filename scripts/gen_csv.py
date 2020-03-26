@@ -48,7 +48,7 @@ class Patient:
         }
 
 # check if data folder exists or not
-if not os.path.isdir('../data')
+if not os.path.isdir('../data'):
     os.mkdir('../data')
 
 dic = {}
