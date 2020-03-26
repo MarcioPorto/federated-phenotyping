@@ -4,3 +4,6 @@
 
 # vscode files
 .vscode
+
+# mac files
+.DS_Store

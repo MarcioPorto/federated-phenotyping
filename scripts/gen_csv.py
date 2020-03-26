@@ -51,13 +51,16 @@ class Patient:
 if not os.path.isdir('../data'):
     os.mkdir('../data')
 
+assert os.path.isdir('../downloads') , "no downloads folder found"
+    
+
 dic = {}
 
-train_files = ['text1.xml','text2.xml']
+train_files = ['obesity_patient_records_training.xml','obesity_patient_records_training2.xml']
 
 for file in train_files:
     # read the training data
-    tree = ElementTree.parse('./' + file)
+    tree = ElementTree.parse('../downloads/' + file)
     root = tree.getroot()
     docs  = root.findall('docs')[0]
     for doc in docs:
@@ -74,11 +77,13 @@ for file in train_files:
         # store in dic
         dic[pat.id] = pat
 
-train_labels = ['label1.xml','label2.xml','label3.xml']
+train_labels = ['obesity_standoff_intuitive_annotations_training.xml',
+                'obesity_standoff_annotations_training_addendum3.xml',
+                'obesity_standoff_annotations_training_addendum.xml']
 
 for file in train_labels:
     # read the annotations
-    tree = ElementTree.parse('./' + file)
+    tree = ElementTree.parse('../downloads/' + file)
     root = tree.getroot()
     diseases  = root.findall('diseases')[0]
     for disease in diseases:
@@ -95,7 +100,7 @@ data_train.to_csv('../data/train.csv', sep=',') # spit the data to a csv
 dic_t = {}
 
 # read the test data
-tree = ElementTree.parse('./test_text.xml')
+tree = ElementTree.parse('../downloads/obesity_patient_records_test.xml')
 root = tree.getroot()
 docs  = root.findall('docs')[0]
 for doc in docs:
@@ -113,7 +118,7 @@ for doc in docs:
     dic_t[pat.id] = pat
 
 # read the test annotations
-tree = ElementTree.parse('./test_label.xml')
+tree = ElementTree.parse('../downloads/obesity_standoff_annotations_test_intuitive.xml')
 root = tree.getroot()
 diseases  = root.findall('diseases')[0]
 for disease in diseases:
@@ -123,6 +128,6 @@ for disease in diseases:
         id_ = int(doc.attrib['id'])
         setattr(dic_t[id_] , dis_name, doc.attrib['judgment'])
 
-data_test = pd.DataFrame([pat.get_attr for pat in dic_t.values()]) 
+data_test = pd.DataFrame([pat.get_attr() for pat in dic_t.values()])
 
 data_test.to_csv('../data/test.csv', sep=',') # spit the test data to the csv
