@@ -11,4 +11,6 @@ First gain access to dataset. Once you have the access, you need to download the
 
 Move all the files inside the `scripts` folder.
 
-Run `python gen_csv.py` to generate `train.csv` and `test.csv` and move them to the `data` folder.
+Install the dependencies first using `pip install -r requirments.txt`
+
+Run `python gen_csv.py` to generate `train.csv` and `test.csv`. They will be in the `data` folder.
