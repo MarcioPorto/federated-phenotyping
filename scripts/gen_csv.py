@@ -52,81 +52,67 @@ if not os.path.isdir('../data'):
     os.mkdir('../data')
 
 assert os.path.isdir('../downloads') , "no downloads folder found"
-    
 
-dic = {}
+dic = {} 
+dic_t = {}
 
 train_files = ['obesity_patient_records_training.xml','obesity_patient_records_training2.xml']
-
-for file in train_files:
-    # read the training data
-    tree = ElementTree.parse('../downloads/' + file)
-    root = tree.getroot()
-    docs  = root.findall('docs')[0]
-    for doc in docs:
-        
-        # extract text data
-        text_data = doc.findall('text')[0].text  
-
-        # create patient
-        pat = Patient()
-
-        pat.text = text_data
-        pat.id = int(doc.attrib['id'])
-
-        # store in dic
-        dic[pat.id] = pat
 
 train_labels = ['obesity_standoff_intuitive_annotations_training.xml',
                 'obesity_standoff_annotations_training_addendum3.xml',
                 'obesity_standoff_annotations_training_addendum.xml']
 
-for file in train_labels:
-    # read the annotations
-    tree = ElementTree.parse('../downloads/' + file)
-    root = tree.getroot()
-    diseases  = root.findall('diseases')[0]
-    for disease in diseases:
-        dis_name = disease.attrib['name'].split(' ')[0]
-        print(dis_name)
-        for doc in disease:
-            id_ = int(doc.attrib['id'])
-            setattr(dic[id_] , dis_name, doc.attrib['judgment'])
+test_files = ['obesity_patient_records_test.xml']
+
+test_labels = ['obesity_standoff_annotations_test_intuitive.xml']
+
+def read_text_files(file_list,dic_store):
+    
+    for file in file_list:
+        # read the training data
+        tree = ElementTree.parse('../downloads/' + file)
+        root = tree.getroot()
+        docs  = root.findall('docs')[0]
+        
+        for doc in docs:
+            
+            # extract text data
+            text_data = doc.findall('text')[0].text  
+
+            # create patient
+            pat = Patient()
+
+            pat.text = text_data
+            pat.id = int(doc.attrib['id'])
+
+            # store in dic
+            dic_store[pat.id] = pat
+
+
+def read_label_files(file_list,dic_store):
+    for file in file_list:
+        # read the annotations
+        tree = ElementTree.parse('../downloads/' + file)
+        root = tree.getroot()
+        diseases  = root.findall('diseases')[0]
+        for disease in diseases:
+            dis_name = disease.attrib['name'].split(' ')[0]
+            for doc in disease:
+                id_ = int(doc.attrib['id'])
+                setattr(dic_store[id_] , dis_name, doc.attrib['judgment'])
+
+
+# read all the files and store the data in csv
+
+read_text_files(train_files,dic)
+read_text_files(test_files,dic_t)
+
+read_label_files(train_labels,dic)
+read_label_files(test_labels,dic_t)
 
 data_train = pd.DataFrame([pat.get_attr() for pat in dic.values()])
 
 data_train.to_csv('../data/train.csv', sep=',') # spit the data to a csv
-
-dic_t = {}
-
-# read the test data
-tree = ElementTree.parse('../downloads/obesity_patient_records_test.xml')
-root = tree.getroot()
-docs  = root.findall('docs')[0]
-for doc in docs:
-    
-    # extract text data
-    text_data = doc.findall('text')[0].text
-    
-    # create pateint
-    pat = Patient()
-
-    pat.text = text_data
-    pat.id = int(doc.attrib['id'])
-
-    # store in dic
-    dic_t[pat.id] = pat
-
-# read the test annotations
-tree = ElementTree.parse('../downloads/obesity_standoff_annotations_test_intuitive.xml')
-root = tree.getroot()
-diseases  = root.findall('diseases')[0]
-for disease in diseases:
-    dis_name = disease.attrib['name'].split(' ')[0]
-    print(dis_name)
-    for doc in disease:
-        id_ = int(doc.attrib['id'])
-        setattr(dic_t[id_] , dis_name, doc.attrib['judgment'])
 
 data_test = pd.DataFrame([pat.get_attr() for pat in dic_t.values()])
 
