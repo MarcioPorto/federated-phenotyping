@@ -3,9 +3,11 @@ import syft as sy
 import torch
 import syfertext
 from syft.generic.string import String
+from dataset import DatasetProvider
 
 
 def generate_workers(num_workers):
+    """Generate given number of workers and return their list"""
     workers_list = []
     # init workers
     for i in range(n_workers):
@@ -14,24 +16,8 @@ def generate_workers(num_workers):
     
     return workers_list
 
-def split_data(data_stream,num_parts):
-    
-    list_data = []
-    
-    start = 0
-    part = len(data_stream) // num_parts 
-
-    for i in range(num_parts):
-        if(i == num_parts - 1):
-            list_data.append(data_stream[start:])
-        else:
-            list_data.append(data_stream[start:start + part])
-            start += part
-
-    return list_data
-
 def send_text_data(data_list,worker_list):
-    """Takes in data list and return a list of list of pointers"""
+    """Takes in text data list and returns a list of list of pointers"""
 
     main_list = []
 
@@ -49,7 +35,7 @@ def send_text_data(data_list,worker_list):
     return main_list
 
 def send_label_data(data_list,worker_list):
-    """Takes in data list and return a list of list of pointers"""
+    """Takes in label data list and returns a list of list of pointers"""
 
     main_list = []
 
@@ -80,7 +66,7 @@ def send_label_data(data_list,worker_list):
     
     return main_list
 
-
+# add hook
 hook = sy.TorchHook(torch)
 me = hook.local_worker
 
@@ -90,20 +76,17 @@ n_workers = 3
 # generate workers
 workers = generate_workers(n_workers)
 
-# send the train data
-data_train = pd.read_csv('../data/train.csv')
-    
-data_splits = split_data(data_train,n_workers)
+# instantiate the dataset provider
+data_provider = DatasetProvider(train_path='../data/train.csv',test_path='../data/test.csv')
 
-train_text_ptr = send_text_data(data_splits,workers)
+# get the data
+train_data = data_provider.provide_data(which='train',splits=n_workers)
+test_data = data_provider.provide_data(which='test',splits=n_workers)
 
-train_label_ptr = send_label_data(data_splits,workers)
+# send the train data and get back list of list of pointers
+train_text_ptr = send_text_data(train_data,workers)
+train_label_ptr = send_label_data(test_data,workers)
 
-# send the test data
-data_test = pd.read_csv('../data/test.csv')
-
-data_splits_t = split_data(data_test,n_workers)
-
-test_text_ptr = send_text_data(data_splits_t,workers)
-
-test_label_ptr = send_label_data(data_splits_t,workers)
+# send the test data and get back list of list of pointers 
+test_text_ptr = send_text_data(test_data,workers)
+test_label_ptr = send_label_data(test_data,workers)

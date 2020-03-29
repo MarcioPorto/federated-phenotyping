@@ -7,3 +7,6 @@
 
 # mac files
 .DS_Store
+
+# cache files
+*.pyc
