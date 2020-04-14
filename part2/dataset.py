@@ -11,6 +11,7 @@ class DatasetProvider:
         self.data_test = pd.read_csv(test_path)
 
     def split_data(self,data_stream,num_parts):
+        """Divides the data into given number of parts"""
         
         list_data = []
         
@@ -26,9 +27,9 @@ class DatasetProvider:
 
         return list_data
 
-    def provide_data(self,which = 'train',splits = 3):
+    def provide_data(self,dataset = 'train',splits = 3):
 
-        if(which == 'train'):
+        if(dataset == 'train'):
             return self.split_data(self.data_train,splits)
-        elif(which == 'test'):
+        elif(dataset == 'test'):
             return self.split_data(self.data_test,splits)
