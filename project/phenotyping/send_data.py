@@ -4,7 +4,7 @@ import torch
 import syfertext
 from syft.generic.string import String
 from .dataset import DatasetProvider
-from .utils import send_text_data,send_label_data,generate_workers
+from .util import send_text_data,send_label_data,generate_workers
 
 # add hook
 hook = sy.TorchHook(torch)
@@ -17,7 +17,7 @@ n_workers = 3
 workers = generate_workers(n_workers)
 
 # instantiate the dataset provider
-data_provider = DatasetProvider(train_path='../data/train.csv',test_path='../data/test.csv')
+data_provider = DatasetProvider(train_path='./data/train.csv',test_path='./data/test.csv')
 
 # get the data
 train_data = data_provider.provide_data(dataset='train',splits=n_workers)
@@ -29,4 +29,4 @@ train_label_worker_ptrs = send_label_data(test_data,workers)
 
 # send the test data and get back list of (list of pointers)
 test_text_worker_ptrs = send_text_data(test_data,workers)
-test_label_worker_ptr = send_label_data(test_data,workers)
+test_label_worker_ptrs = send_label_data(test_data,workers)
