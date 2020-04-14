@@ -3,8 +3,8 @@ import syft as sy
 import torch
 import syfertext
 from syft.generic.string import String
-from .dataset import DatasetProvider
-from .util import send_text_data,send_label_data,generate_workers
+from dataset import DatasetProvider
+from util import send_text_data,send_label_data,generate_workers
 
 # add hook
 hook = sy.TorchHook(torch)

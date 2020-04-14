@@ -1,11 +1,17 @@
-# this file contains some utility functions
+import syft as sy
+import torch
+from syft.generic.string import String
+
+# add hook
+hook = sy.TorchHook(torch)
+me = hook.local_worker
 
 def generate_workers(num_workers):
     """Generates a given number of PySyft's virtual workers"""
     
     workers_list = []
     # init workers
-    for i in range(n_workers):
+    for i in range(num_workers):
         worker = sy.VirtualWorker(hook, id=str(i))
         workers_list.append(worker)
     
