@@ -26,7 +26,3 @@ test_data = data_provider.provide_data(dataset='test',splits=n_workers)
 # send the train data and get back list of (list of pointers)
 train_text_worker_ptrs = send_text_data(train_data,workers)
 train_label_worker_ptrs = send_label_data(test_data,workers)
-
-# send the test data and get back list of (list of pointers)
-test_text_worker_ptrs = send_text_data(test_data,workers)
-test_label_worker_ptrs = send_label_data(test_data,workers)
