@@ -18,7 +18,7 @@ class pat_embed(nn.Module):
         self.fc = nn.Sequential(
             nn.Linear(500, 1000),
             nn.ReLU(),
-            nn.Linear(1000,200)
+            nn.Linear(1000,1023)
         )
         
     def forward(self, x):

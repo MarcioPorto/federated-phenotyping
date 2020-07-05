@@ -4,8 +4,8 @@ import pickle
 
 
 class Patient():
-    def __init__(self, train_text_path, cui2idx_path, valid_cuis_path, cuis_path):
-        f = open(train_text_path) # train.txt
+    def __init__(self, text_path, cui2idx_path, label2idx_path, valid_cuis_path, cuis_path, labels_path):
+        f = open(text_path) # train.txt
         self.patients = None
         for line in f:
             self.patients = line.split(' ')
@@ -18,8 +18,10 @@ class Patient():
         f.close()
         
         self.cui2idx = pickle.load(open(cui2idx_path,'rb')) # cui2idx.pt
+        self.label2idx = pickle.load(open(label2idx_path,'rb')) # label2idx.pt
 
         self.cuis_path = cuis_path
+        self.labels_path = labels_path
         
     def __getitem__(self, index):
         pat = self.patients[index]
@@ -29,6 +31,20 @@ class Patient():
         for line in f:
             cuis = line.split(' ')
         f.close()
+
+        f = open(self.labels_path + pat)
+        labels = []
+        for line in f:
+            label = line.strip()
+            labels.append(label)
+        f.close()
+
+        label_tensor = torch.zeros(1023)
+
+        for label in labels:
+            label_tensor[self.label2idx[label]] += 1
+        
+        label_tensor = label_tensor.float()
         
         cuis_final = []
         
@@ -47,7 +63,7 @@ class Patient():
         while(len(idx_list) < 4726): # this is the max valid CUIs for a single patient
             idx_list.append(padding_idx)
         
-        return torch.tensor(idx_list, dtype = torch.long)
+        return torch.tensor(idx_list, dtype = torch.long), label_tensor
     
     def __len__(self):
         return len(self.patients)
