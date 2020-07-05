@@ -16,16 +16,10 @@ def _get_lr(optimizer):
         return param_group['lr']
 
 def calc_results(predictions, labels):
-    
-    cor = torch.zeros(1023).cuda()
-    cor = cor.float()
-
-    for x,y in zip(predictions, labels):
-        x = (x > 0.5).float()
-        mask = (x == y).float()
-        cor += mask
-    
-    return cor
+    predictions = (predictions > 0.5).float()
+    mask = (predictions == labels).foat()
+    correct = mask.sum(dim = 0)
+    return correct
 
 
 def _train_model(model, train_loader, epoch, num_epochs, optimizer, criterion, writer, current_lr, log_every=100):
