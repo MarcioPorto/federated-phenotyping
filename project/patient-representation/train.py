@@ -30,8 +30,8 @@ val_data = Patient(path + '/val_pat.txt',
                     path + '/cuis/', # Folder where extracted patient cuis are
                     path + '/labels/')  # Folder where patient labels are
 
-train_loader = data.DataLoader(train_data, batch_size=50, num_workers=0, shuffle=True)
-val_loader = data.DataLoader(val_data, batch_size=50, num_workers=0, shuffle=False)
+train_loader = data.DataLoader(train_data, batch_size=50, num_workers=6, shuffle=True)
+val_loader = data.DataLoader(val_data, batch_size=50, num_workers=6, shuffle=False)
 
 print('Initializing Loss Method...')
 criterion = torch.nn.BCEWithLogitsLoss()
