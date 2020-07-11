@@ -58,4 +58,4 @@ Also when creating the model, we need the pretrained embeddings, so we provide t
 ```python
 model  =  pat_embed('../patient-representation/pretrained_cuis.npy')
 ```
-Now we are ready to begin training.
+Now we are ready to begin training. To start, navigate to `project/patient-representation/` and do `python train.py`. Make sure to change `path` variable in `train.py` accordingly. To change hyper-parameters, look at `config.py`.
