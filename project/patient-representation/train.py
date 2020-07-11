@@ -10,26 +10,28 @@ from utils import _train_model, _eval_model, _get_lr
 
 from torch.utils import data
 
-model = pat_embed('../patient-representation/pretrained_cuis.npy')
+model = pat_embed(path + '/pretrained_cuis.npy')
 if torch.cuda.is_available():
         model = model.cuda()
 
-train_data = Patient('../patient-representation/train_pat.txt', 
-                    '../patient-representation/cui2idx.pt', 
-                    '../patient-representation/label2idx.pt',
-                    '../patient-representation/valid_cuis.txt',
-                    '../patient-representation/cuis/', # Folder where extracted patient cuis are
-                    '../patient-representation/labels/')  # Folder where patient labels are
+path = '../../../required files/Training files'
 
-val_data = Patient('../patient-representation/val_pat.txt', 
-                    '../patient-representation/cui2idx.pt', 
-                    '../patient-representation/label2idx.pt',
-                    '../patient-representation/valid_cuis.txt',
-                    '../patient-representation/cuis/', # Folder where extracted patient cuis are
-                    '../patient-representation/labels/')  # Folder where patient labels are
+train_data = Patient(path + '/train_pat.txt', 
+                    path + '/cui2idx.pt', 
+                    path + '/label2idx.pt',
+                    path + '/valid_cuis.txt',
+                    path + '/cuis/', # Folder where extracted patient cuis are
+                    path + '/labels/')  # Folder where patient labels are
 
-train_loader = data.DataLoader(train_data, batch_size=50, num_workers=6, shuffle=True)
-val_loader = data.DataLoader(val_data, batch_size=50, num_workers=6, shuffle=False)
+val_data = Patient(path + '/val_pat.txt', 
+                    path + '/cui2idx.pt', 
+                    path + '/label2idx.pt',
+                    path + '/valid_cuis.txt',
+                    path + '/cuis/', # Folder where extracted patient cuis are
+                    path + '/labels/')  # Folder where patient labels are
+
+train_loader = data.DataLoader(train_data, batch_size=50, num_workers=0, shuffle=True)
+val_loader = data.DataLoader(val_data, batch_size=50, num_workers=0, shuffle=False)
 
 print('Initializing Loss Method...')
 criterion = torch.nn.BCEWithLogitsLoss()

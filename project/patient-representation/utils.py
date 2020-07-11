@@ -17,7 +17,7 @@ def _get_lr(optimizer):
 
 def calc_results(predictions, labels):
     predictions = (predictions > 0.5).float()
-    mask = (predictions == labels).foat()
+    mask = (predictions == labels).float()
     correct = mask.sum(dim = 0)
     return correct
 
